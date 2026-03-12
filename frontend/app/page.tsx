@@ -6,6 +6,7 @@ import PropertySearch from "@/components/PropertySearch";
 import FloodMap from "@/components/FloodMap";
 import RiskPanel from "@/components/RiskPanel";
 import CertificateButton from "@/components/CertificateButton";
+import CertificateVerifyPanel from "@/components/CertificateVerifyPanel";
 import MonitoringPanel from "@/components/MonitoringPanel";
 import BulkUpload from "@/components/BulkUpload";
 import AlertPanel from "@/components/AlertPanel";
@@ -75,6 +76,13 @@ export default function Home() {
               propertyId={selectedProperty?.id ?? null}
               propertyName={selectedProperty?.propertyName ?? null}
             />
+          </div>
+
+          <div>
+            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
+              Verify Certificate
+            </h2>
+            <CertificateVerifyPanel />
           </div>
 
           <div>

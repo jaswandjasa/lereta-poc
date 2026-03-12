@@ -5,10 +5,12 @@ package com.estate.floodzoning.service;
 // Extraction order: 1st (least coupled — standalone PDF generation)
 
 import com.estate.floodzoning.domain.CertificateAudit;
+import com.estate.floodzoning.dto.CertificateVerificationDto;
 import com.estate.floodzoning.dto.FloodCertificateDto;
 import com.estate.floodzoning.dto.FloodResponse;
 import com.estate.floodzoning.dto.NearestZoneResponse;
 import com.estate.floodzoning.dto.PropertyDto;
+import com.estate.floodzoning.enums.VerificationStatus;
 import com.estate.floodzoning.repository.CertificateAuditRepository;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
@@ -150,6 +152,33 @@ public class CertificateService {
         valueCell.setBorderColor(Color.LIGHT_GRAY);
         valueCell.setPadding(8);
         table.addCell(valueCell);
+    }
+
+    public CertificateVerificationDto verifyCertificate(String certificateNumber) {
+        log.info("Verifying certificate: {}", certificateNumber);
+
+        var auditOpt = auditRepository.findByCertificateNumber(certificateNumber);
+        if (auditOpt.isEmpty()) {
+            log.warn("Certificate not found: {}", certificateNumber);
+            return new CertificateVerificationDto(
+                    certificateNumber, null, null, null, null, null,
+                    VerificationStatus.NOT_FOUND);
+        }
+
+        CertificateAudit audit = auditOpt.get();
+        VerificationStatus status = (audit.getPdfHash() != null && !audit.getPdfHash().isBlank())
+                ? VerificationStatus.VALID
+                : VerificationStatus.INVALID;
+
+        log.info("Certificate verified: certNumber={}, status={}", certificateNumber, status);
+        return new CertificateVerificationDto(
+                audit.getCertificateNumber(),
+                audit.getPropertyNameSnapshot(),
+                audit.getRiskLevel(),
+                audit.getZoneName(),
+                audit.getGeneratedAt(),
+                audit.getPdfHash(),
+                status);
     }
 
     private String computeSha256(byte[] data) {

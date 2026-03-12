@@ -41,6 +41,16 @@ export interface BulkFloodSummary {
   results: BulkFloodResult[];
 }
 
+export interface CertificateVerificationDto {
+  certificateNumber: string;
+  propertyName: string | null;
+  riskLevel: string | null;
+  zoneName: string | null;
+  issuedAt: string | null;
+  pdfHash: string | null;
+  verificationStatus: "VALID" | "NOT_FOUND" | "INVALID";
+}
+
 export interface FloodAlertDto {
   id: number;
   propertyId: number;

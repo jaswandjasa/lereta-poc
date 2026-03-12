@@ -1,10 +1,12 @@
 package com.estate.floodzoning.service;
 
 import com.estate.floodzoning.domain.CertificateAudit;
+import com.estate.floodzoning.dto.CertificateVerificationDto;
 import com.estate.floodzoning.dto.FloodResponse;
 import com.estate.floodzoning.dto.NearestZoneResponse;
 import com.estate.floodzoning.dto.PropertyDto;
 import com.estate.floodzoning.enums.RiskLevel;
+import com.estate.floodzoning.enums.VerificationStatus;
 import com.estate.floodzoning.repository.CertificateAuditRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,6 +15,9 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -82,5 +87,57 @@ class CertificateServiceTest {
         assertThat(saved.getRiskLevel()).isEqualTo("MEDIUM");
         assertThat(saved.getPdfHash()).isNotBlank();
         assertThat(saved.getPdfHash()).hasSize(64); // SHA-256 hex = 64 chars
+    }
+
+    @Test
+    @DisplayName("Should return VALID status for existing certificate with hash")
+    void shouldReturnValidForExistingCertificate() {
+        CertificateAudit audit = new CertificateAudit();
+        audit.setCertificateNumber("CERT-20260313-000001");
+        audit.setPropertyNameSnapshot("Riverside Heights");
+        audit.setRiskLevel("HIGH");
+        audit.setZoneName("Nullah Lai Flood Plain");
+        audit.setGeneratedAt(LocalDateTime.now());
+        audit.setPdfHash("abc123def456");
+
+        when(auditRepository.findByCertificateNumber("CERT-20260313-000001"))
+                .thenReturn(Optional.of(audit));
+
+        CertificateVerificationDto result = certificateService.verifyCertificate("CERT-20260313-000001");
+
+        assertThat(result.verificationStatus()).isEqualTo(VerificationStatus.VALID);
+        assertThat(result.propertyName()).isEqualTo("Riverside Heights");
+        assertThat(result.pdfHash()).isEqualTo("abc123def456");
+    }
+
+    @Test
+    @DisplayName("Should return NOT_FOUND status for unknown certificate")
+    void shouldReturnNotFoundForUnknownCertificate() {
+        when(auditRepository.findByCertificateNumber("CERT-FAKE"))
+                .thenReturn(Optional.empty());
+
+        CertificateVerificationDto result = certificateService.verifyCertificate("CERT-FAKE");
+
+        assertThat(result.verificationStatus()).isEqualTo(VerificationStatus.NOT_FOUND);
+        assertThat(result.propertyName()).isNull();
+    }
+
+    @Test
+    @DisplayName("Should return INVALID status for certificate with null hash")
+    void shouldReturnInvalidForNullHash() {
+        CertificateAudit audit = new CertificateAudit();
+        audit.setCertificateNumber("CERT-20260313-000002");
+        audit.setPropertyNameSnapshot("Lake View");
+        audit.setRiskLevel("MEDIUM");
+        audit.setZoneName("Rawal Lake");
+        audit.setGeneratedAt(LocalDateTime.now());
+        audit.setPdfHash(null);
+
+        when(auditRepository.findByCertificateNumber("CERT-20260313-000002"))
+                .thenReturn(Optional.of(audit));
+
+        CertificateVerificationDto result = certificateService.verifyCertificate("CERT-20260313-000002");
+
+        assertThat(result.verificationStatus()).isEqualTo(VerificationStatus.INVALID);
     }
 }

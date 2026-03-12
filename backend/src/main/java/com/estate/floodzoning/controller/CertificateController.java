@@ -1,5 +1,6 @@
 package com.estate.floodzoning.controller;
 
+import com.estate.floodzoning.dto.CertificateVerificationDto;
 import com.estate.floodzoning.service.CertificateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -28,5 +29,12 @@ public class CertificateController {
         headers.setContentLength(pdfBytes.length);
 
         return ResponseEntity.ok().headers(headers).body(pdfBytes);
+    }
+
+    @GetMapping("/verify/{certificateNumber}")
+    public ResponseEntity<CertificateVerificationDto> verifyCertificate(
+            @PathVariable String certificateNumber) {
+        CertificateVerificationDto result = certificateService.verifyCertificate(certificateNumber);
+        return ResponseEntity.ok(result);
     }
 }

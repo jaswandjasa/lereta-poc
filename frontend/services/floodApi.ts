@@ -1,6 +1,7 @@
 import axios from "axios";
 import type {
   BulkFloodSummary,
+  CertificateVerificationDto,
   FloodAlertDto,
   FloodResponse,
   FloodZoneDto,
@@ -48,6 +49,11 @@ export async function findNearestZone(
   const res = await api.get<NearestZoneResponse>("/api/flood/nearest", {
     params: { lat, lon },
   });
+  return res.data;
+}
+
+export async function verifyCertificate(certNumber: string): Promise<CertificateVerificationDto> {
+  const res = await api.get<CertificateVerificationDto>(`/api/certificate/verify/${certNumber}`);
   return res.data;
 }
 
