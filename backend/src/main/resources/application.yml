@@ -1,0 +1,24 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:oracle:thin:@localhost:1521/FREE
+    username: flood_user
+    password: flood_password
+    driver-class-name: oracle.jdbc.OracleDriver
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.OracleDialect
+
+logging:
+  level:
+    com.estate.floodzoning: DEBUG
+    org.springframework.web: INFO
+    org.hibernate.SQL: DEBUG
