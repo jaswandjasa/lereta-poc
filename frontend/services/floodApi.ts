@@ -2,6 +2,7 @@ import axios from "axios";
 import type {
   FloodResponse,
   FloodZoneDto,
+  MonitoringStatusDto,
   NearestZoneResponse,
   PropertyDto,
 } from "@/types";
@@ -45,5 +46,15 @@ export async function findNearestZone(
   const res = await api.get<NearestZoneResponse>("/api/flood/nearest", {
     params: { lat, lon },
   });
+  return res.data;
+}
+
+export async function getMonitoringStatus(): Promise<MonitoringStatusDto[]> {
+  const res = await api.get<MonitoringStatusDto[]>("/api/monitoring");
+  return res.data;
+}
+
+export async function triggerMonitoring(): Promise<{ status: string; changesDetected: number }> {
+  const res = await api.get<{ status: string; changesDetected: number }>("/api/monitoring/run");
   return res.data;
 }

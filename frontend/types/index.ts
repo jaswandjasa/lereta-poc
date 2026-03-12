@@ -24,3 +24,16 @@ export interface NearestZoneResponse {
   insideFloodZone: boolean;
   nearestDistanceMeters: number;
 }
+
+export interface MonitoringStatusDto {
+  id: number;
+  propertyId: number;
+  propertyName: string;
+  lastZone: string | null;
+  currentZone: string | null;
+  lastRisk: string | null;
+  currentRisk: string | null;
+  lastChecked: string | null;
+  statusChanged: boolean;
+  monitoringEnabled: boolean;
+}

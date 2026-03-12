@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import PropertySearch from "@/components/PropertySearch";
 import FloodMap from "@/components/FloodMap";
 import RiskPanel from "@/components/RiskPanel";
+import MonitoringPanel from "@/components/MonitoringPanel";
 import { useFloodCheck } from "@/hooks/useFloodCheck";
 import type { PropertyDto } from "@/types";
 
@@ -51,7 +52,7 @@ export default function Home() {
             <PropertySearch onSelect={handlePropertySelect} />
           </div>
 
-          <div className="mt-auto">
+          <div>
             <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
               Flood Risk Assessment
             </h2>
@@ -61,6 +62,13 @@ export default function Home() {
               error={error}
               coordinates={coordinates}
             />
+          </div>
+
+          <div className="mt-auto">
+            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
+              Loan Monitoring
+            </h2>
+            <MonitoringPanel />
           </div>
         </aside>
 
