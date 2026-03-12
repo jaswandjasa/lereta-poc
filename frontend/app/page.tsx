@@ -11,6 +11,7 @@ import MonitoringPanel from "@/components/MonitoringPanel";
 import BulkUpload from "@/components/BulkUpload";
 import AlertPanel from "@/components/AlertPanel";
 import ZoneImportPanel from "@/components/ZoneImportPanel";
+import PortfolioDashboard from "@/components/PortfolioDashboard";
 import { useFloodCheck } from "@/hooks/useFloodCheck";
 import type { PropertyDto } from "@/types";
 
@@ -46,6 +47,8 @@ export default function Home() {
   return (
     <div className="flex flex-col h-screen">
       <Header />
+
+      <PortfolioDashboard />
 
       <main className="flex-1 flex overflow-hidden">
         {/* Sidebar */}

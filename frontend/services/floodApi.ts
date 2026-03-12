@@ -7,6 +7,7 @@ import type {
   FloodZoneDto,
   MonitoringStatusDto,
   NearestZoneResponse,
+  PortfolioDashboardDto,
   PropertyDto,
   ZoneImportResult,
 } from "@/types";
@@ -72,6 +73,11 @@ export async function bulkFloodCheck(file: File): Promise<BulkFloodSummary> {
     headers: { "Content-Type": "multipart/form-data" },
     timeout: 60000,
   });
+  return res.data;
+}
+
+export async function getPortfolioDashboard(): Promise<PortfolioDashboardDto> {
+  const res = await api.get<PortfolioDashboardDto>("/api/dashboard/portfolio");
   return res.data;
 }
 

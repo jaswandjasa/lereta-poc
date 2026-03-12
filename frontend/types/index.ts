@@ -41,6 +41,16 @@ export interface BulkFloodSummary {
   results: BulkFloodResult[];
 }
 
+export interface PortfolioDashboardDto {
+  highRiskCount: number;
+  mediumRiskCount: number;
+  lowRiskCount: number;
+  alertsToday: number;
+  todayCertificates: number;
+  totalCertificates: number;
+  monitoredChanged: number;
+}
+
 export interface ZoneImportResult {
   zonesImported: number;
   errors: string[];
