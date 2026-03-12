@@ -41,6 +41,20 @@ export interface BulkFloodSummary {
   results: BulkFloodResult[];
 }
 
+export interface FloodAlertDto {
+  id: number;
+  propertyId: number;
+  propertyName: string;
+  oldRisk: string | null;
+  newRisk: string | null;
+  oldZone: string | null;
+  newZone: string | null;
+  alertType: string;
+  createdAt: string;
+  acknowledged: boolean;
+  acknowledgedAt: string | null;
+}
+
 export interface MonitoringStatusDto {
   id: number;
   propertyId: number;

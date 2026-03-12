@@ -8,6 +8,7 @@ import RiskPanel from "@/components/RiskPanel";
 import CertificateButton from "@/components/CertificateButton";
 import MonitoringPanel from "@/components/MonitoringPanel";
 import BulkUpload from "@/components/BulkUpload";
+import AlertPanel from "@/components/AlertPanel";
 import { useFloodCheck } from "@/hooks/useFloodCheck";
 import type { PropertyDto } from "@/types";
 
@@ -81,6 +82,13 @@ export default function Home() {
               Bulk Flood Check
             </h2>
             <BulkUpload />
+          </div>
+
+          <div>
+            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
+              Flood Alerts
+            </h2>
+            <AlertPanel />
           </div>
 
           <div>

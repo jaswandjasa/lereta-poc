@@ -1,6 +1,7 @@
 import axios from "axios";
 import type {
   BulkFloodSummary,
+  FloodAlertDto,
   FloodResponse,
   FloodZoneDto,
   MonitoringStatusDto,
@@ -65,6 +66,15 @@ export async function bulkFloodCheck(file: File): Promise<BulkFloodSummary> {
     timeout: 60000,
   });
   return res.data;
+}
+
+export async function getAlerts(): Promise<FloodAlertDto[]> {
+  const res = await api.get<FloodAlertDto[]>("/api/alerts");
+  return res.data;
+}
+
+export async function acknowledgeAlert(id: number): Promise<void> {
+  await api.patch(`/api/alerts/${id}/acknowledge`);
 }
 
 export async function getMonitoringStatus(): Promise<MonitoringStatusDto[]> {

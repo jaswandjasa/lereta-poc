@@ -28,6 +28,7 @@ public class MonitoringService {
     private final PropertyMonitoringRepository monitoringRepository;
     private final PropertyRepository propertyRepository;
     private final FloodService floodService;
+    private final AlertService alertService;
 
     public List<MonitoringStatusDto> getMonitoringStatus() {
         log.debug("Fetching all monitoring records");
@@ -72,6 +73,8 @@ public class MonitoringService {
                     changesDetected++;
                     log.warn("CHANGE DETECTED — property={}, zone: {} → {}, risk: {} → {}",
                             record.getPropertyId(), previousZone, newZone, previousRisk, newRisk);
+                    alertService.createAlert(record.getPropertyId(),
+                            previousRisk, newRisk, previousZone, newZone);
                 } else {
                     log.debug("No change — property={}, zone={}, risk={}",
                             record.getPropertyId(), newZone, newRisk);
