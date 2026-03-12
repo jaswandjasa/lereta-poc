@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import PropertySearch from "@/components/PropertySearch";
 import FloodMap from "@/components/FloodMap";
 import RiskPanel from "@/components/RiskPanel";
+import CertificateButton from "@/components/CertificateButton";
 import MonitoringPanel from "@/components/MonitoringPanel";
 import { useFloodCheck } from "@/hooks/useFloodCheck";
 import type { PropertyDto } from "@/types";
@@ -61,6 +62,16 @@ export default function Home() {
               loading={loading}
               error={error}
               coordinates={coordinates}
+            />
+          </div>
+
+          <div>
+            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
+              Flood Certificate
+            </h2>
+            <CertificateButton
+              propertyId={selectedProperty?.id ?? null}
+              propertyName={selectedProperty?.propertyName ?? null}
             />
           </div>
 

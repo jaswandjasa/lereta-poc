@@ -49,6 +49,13 @@ export async function findNearestZone(
   return res.data;
 }
 
+export async function downloadCertificate(propertyId: number): Promise<Blob> {
+  const res = await api.get(`/api/certificate/${propertyId}`, {
+    responseType: "blob",
+  });
+  return res.data;
+}
+
 export async function getMonitoringStatus(): Promise<MonitoringStatusDto[]> {
   const res = await api.get<MonitoringStatusDto[]>("/api/monitoring");
   return res.data;
