@@ -3,9 +3,9 @@ server:
 
 spring:
   datasource:
-    url: jdbc:oracle:thin:@localhost:1521/FREE
-    username: flood_user
-    password: flood_password
+    url: jdbc:oracle:thin:@//localhost:1521/flooddb.tail81da12.ts.net.FLOODDB
+    username: flood_app
+    password: flood_app
     driver-class-name: oracle.jdbc.OracleDriver
 
   jpa:
