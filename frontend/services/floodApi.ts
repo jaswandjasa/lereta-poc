@@ -1,5 +1,6 @@
 import axios from "axios";
 import type {
+  BulkFloodSummary,
   FloodResponse,
   FloodZoneDto,
   MonitoringStatusDto,
@@ -52,6 +53,16 @@ export async function findNearestZone(
 export async function downloadCertificate(propertyId: number): Promise<Blob> {
   const res = await api.get(`/api/certificate/${propertyId}`, {
     responseType: "blob",
+  });
+  return res.data;
+}
+
+export async function bulkFloodCheck(file: File): Promise<BulkFloodSummary> {
+  const formData = new FormData();
+  formData.append("file", file);
+  const res = await api.post<BulkFloodSummary>("/api/flood/bulk-check", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+    timeout: 60000,
   });
   return res.data;
 }

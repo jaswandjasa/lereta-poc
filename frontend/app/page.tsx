@@ -7,6 +7,7 @@ import FloodMap from "@/components/FloodMap";
 import RiskPanel from "@/components/RiskPanel";
 import CertificateButton from "@/components/CertificateButton";
 import MonitoringPanel from "@/components/MonitoringPanel";
+import BulkUpload from "@/components/BulkUpload";
 import { useFloodCheck } from "@/hooks/useFloodCheck";
 import type { PropertyDto } from "@/types";
 
@@ -45,7 +46,7 @@ export default function Home() {
 
       <main className="flex-1 flex overflow-hidden">
         {/* Sidebar */}
-        <aside className="w-80 border-r border-gray-200 bg-white flex flex-col p-4 gap-4 overflow-hidden">
+        <aside className="w-80 border-r border-gray-200 bg-white flex flex-col p-4 gap-4 overflow-y-auto">
           <div>
             <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
               Properties
@@ -75,7 +76,14 @@ export default function Home() {
             />
           </div>
 
-          <div className="mt-auto">
+          <div>
+            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
+              Bulk Flood Check
+            </h2>
+            <BulkUpload />
+          </div>
+
+          <div>
             <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
               Loan Monitoring
             </h2>

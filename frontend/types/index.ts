@@ -25,6 +25,22 @@ export interface NearestZoneResponse {
   nearestDistanceMeters: number;
 }
 
+export interface BulkFloodResult {
+  propertyName: string;
+  riskLevel: string | null;
+  insideFloodZone: boolean;
+  nearestZone: string | null;
+  processed: boolean;
+  errorMessage: string | null;
+}
+
+export interface BulkFloodSummary {
+  totalRows: number;
+  successRows: number;
+  failedRows: number;
+  results: BulkFloodResult[];
+}
+
 export interface MonitoringStatusDto {
   id: number;
   propertyId: number;
