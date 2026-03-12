@@ -41,6 +41,11 @@ export interface BulkFloodSummary {
   results: BulkFloodResult[];
 }
 
+export interface ZoneImportResult {
+  zonesImported: number;
+  errors: string[];
+}
+
 export interface CertificateVerificationDto {
   certificateNumber: string;
   propertyName: string | null;

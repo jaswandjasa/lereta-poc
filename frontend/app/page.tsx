@@ -10,6 +10,7 @@ import CertificateVerifyPanel from "@/components/CertificateVerifyPanel";
 import MonitoringPanel from "@/components/MonitoringPanel";
 import BulkUpload from "@/components/BulkUpload";
 import AlertPanel from "@/components/AlertPanel";
+import ZoneImportPanel from "@/components/ZoneImportPanel";
 import { useFloodCheck } from "@/hooks/useFloodCheck";
 import type { PropertyDto } from "@/types";
 
@@ -83,6 +84,13 @@ export default function Home() {
               Verify Certificate
             </h2>
             <CertificateVerifyPanel />
+          </div>
+
+          <div>
+            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
+              Import Flood Zones
+            </h2>
+            <ZoneImportPanel />
           </div>
 
           <div>

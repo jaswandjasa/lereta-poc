@@ -8,6 +8,7 @@ import type {
   MonitoringStatusDto,
   NearestZoneResponse,
   PropertyDto,
+  ZoneImportResult,
 } from "@/types";
 
 const api = axios.create({
@@ -70,6 +71,16 @@ export async function bulkFloodCheck(file: File): Promise<BulkFloodSummary> {
   const res = await api.post<BulkFloodSummary>("/api/flood/bulk-check", formData, {
     headers: { "Content-Type": "multipart/form-data" },
     timeout: 60000,
+  });
+  return res.data;
+}
+
+export async function importGeoJson(file: File): Promise<ZoneImportResult> {
+  const formData = new FormData();
+  formData.append("file", file);
+  const res = await api.post<ZoneImportResult>("/api/zones/import", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+    timeout: 30000,
   });
   return res.data;
 }
