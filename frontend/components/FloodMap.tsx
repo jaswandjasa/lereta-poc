@@ -4,6 +4,7 @@ import mapboxgl from "mapbox-gl";
 import { useEffect, useRef, useCallback } from "react";
 import { getAllZones, getFloodBuffer } from "@/services/floodApi";
 import type { FloodZoneDto, PropertyDto } from "@/types";
+import MapLegend from "@/components/MapLegend";
 
 const RISK_COLORS: Record<string, string> = {
   HIGH: "#ef4444",
@@ -240,9 +241,12 @@ export default function FloodMap({
   }, [selectedProperty]);
 
   return (
-    <div
-      ref={containerRef}
-      className="w-full h-full rounded-lg overflow-hidden border border-gray-200"
-    />
+    <div className="relative w-full h-full">
+      <div
+        ref={containerRef}
+        className="w-full h-full rounded-lg overflow-hidden border border-gray-200"
+      />
+      <MapLegend />
+    </div>
   );
 }
