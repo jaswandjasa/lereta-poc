@@ -56,4 +56,7 @@ public class CertificateAudit {
 
     @Column(name = "generated_by")
     private String generatedBy;
+
+    @Column(name = "qr_reference")
+    private String qrReference;
 }

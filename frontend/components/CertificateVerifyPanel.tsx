@@ -82,6 +82,12 @@ export default function CertificateVerifyPanel() {
               <p><span className="font-medium">Risk:</span> {result.riskLevel}</p>
               <p><span className="font-medium">Zone:</span> {result.zoneName}</p>
               <p className="truncate"><span className="font-medium">Hash:</span> {result.pdfHash}</p>
+              <p className="truncate text-indigo-600 mt-1">
+                <span className="font-medium text-gray-600">QR URL:</span>{" "}
+                <a href={`/api/certificate/verify/${result.certificateNumber}`} className="underline">
+                  /verify/{result.certificateNumber}
+                </a>
+              </p>
             </div>
           )}
         </div>

@@ -12,10 +12,16 @@ import com.estate.floodzoning.dto.NearestZoneResponse;
 import com.estate.floodzoning.dto.PropertyDto;
 import com.estate.floodzoning.enums.VerificationStatus;
 import com.estate.floodzoning.repository.CertificateAuditRepository;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
+import com.lowagie.text.Image;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPCell;
@@ -70,7 +76,9 @@ public class CertificateService {
                 now
         );
 
-        byte[] pdfBytes = buildPdf(certDto);
+        String qrReference = "http://localhost:8080/api/certificate/verify/" + certNumber;
+
+        byte[] pdfBytes = buildPdf(certDto, qrReference);
 
         String pdfHash = computeSha256(pdfBytes);
 
@@ -85,13 +93,14 @@ public class CertificateService {
         audit.setPdfHash(pdfHash);
         audit.setGeneratedAt(now);
         audit.setGeneratedBy("system");
+        audit.setQrReference(qrReference);
         auditRepository.save(audit);
 
         log.info("Certificate generated: certNumber={}, propertyId={}, hash={}", certNumber, propertyId, pdfHash);
         return pdfBytes;
     }
 
-    private byte[] buildPdf(FloodCertificateDto cert) {
+    private byte[] buildPdf(FloodCertificateDto cert, String qrReference) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Document document = new Document();
         PdfWriter.getInstance(document, baos);
@@ -128,6 +137,24 @@ public class CertificateService {
                 headerFont, normalFont);
 
         document.add(table);
+
+        // Embed QR code
+        try {
+            byte[] qrBytes = generateQrImage(qrReference);
+            Image qrImage = Image.getInstance(qrBytes);
+            qrImage.scaleToFit(100, 100);
+            qrImage.setAlignment(Element.ALIGN_CENTER);
+            document.add(qrImage);
+
+            Paragraph qrLabel = new Paragraph("Scan to verify this certificate",
+                    FontFactory.getFont(FontFactory.HELVETICA, 8, Color.GRAY));
+            qrLabel.setAlignment(Element.ALIGN_CENTER);
+            qrLabel.setSpacingAfter(10);
+            document.add(qrLabel);
+        } catch (Exception e) {
+            log.error("QR generation failed for cert={}", cert.certificateNumber(), e);
+            throw new RuntimeException("Failed to generate QR code for certificate", e);
+        }
 
         Paragraph disclaimer = new Paragraph(
                 "This certificate is generated based on current flood zone data and Oracle Spatial analysis. " +
@@ -179,6 +206,18 @@ public class CertificateService {
                 audit.getGeneratedAt(),
                 audit.getPdfHash(),
                 status);
+    }
+
+    private byte[] generateQrImage(String content) throws WriterException {
+        QRCodeWriter writer = new QRCodeWriter();
+        BitMatrix matrix = writer.encode(content, BarcodeFormat.QR_CODE, 200, 200);
+        ByteArrayOutputStream qrOut = new ByteArrayOutputStream();
+        try {
+            MatrixToImageWriter.writeToStream(matrix, "PNG", qrOut);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to write QR image", e);
+        }
+        return qrOut.toByteArray();
     }
 
     private String computeSha256(byte[] data) {

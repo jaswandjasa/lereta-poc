@@ -87,6 +87,7 @@ class CertificateServiceTest {
         assertThat(saved.getRiskLevel()).isEqualTo("MEDIUM");
         assertThat(saved.getPdfHash()).isNotBlank();
         assertThat(saved.getPdfHash()).hasSize(64); // SHA-256 hex = 64 chars
+        assertThat(saved.getQrReference()).startsWith("http://localhost:8080/api/certificate/verify/CERT-");
     }
 
     @Test
