@@ -12,7 +12,7 @@ import java.util.List;
 public interface FloodZoneRepository extends JpaRepository<FloodZone, Long> {
 
     @Query(value = """
-            SELECT fz.id, fz.zone_name, fz.risk_level, fz.geojson
+            SELECT fz.id, fz.zone_name, fz.risk_level, fz.geojson, fz.version_tag, fz.imported_at
             FROM flood_zones fz
             WHERE SDO_CONTAINS(
                 fz.geom,
@@ -22,7 +22,7 @@ public interface FloodZoneRepository extends JpaRepository<FloodZone, Long> {
     List<FloodZone> findContainingZones(@Param("lon") double lon, @Param("lat") double lat);
 
     @Query(value = """
-            SELECT fz.id, fz.zone_name, fz.risk_level, fz.geojson
+            SELECT fz.id, fz.zone_name, fz.risk_level, fz.geojson, fz.version_tag, fz.imported_at
             FROM flood_zones fz
             WHERE SDO_WITHIN_DISTANCE(
                 fz.geom,
@@ -33,7 +33,7 @@ public interface FloodZoneRepository extends JpaRepository<FloodZone, Long> {
     List<FloodZone> findZonesWithinDistance(@Param("lon") double lon, @Param("lat") double lat);
 
     @Query(value = """
-            SELECT fz.id, fz.zone_name, fz.risk_level, fz.geojson
+            SELECT fz.id, fz.zone_name, fz.risk_level, fz.geojson, fz.version_tag, fz.imported_at
             FROM flood_zones fz
             WHERE SDO_NN(
                 fz.geom,

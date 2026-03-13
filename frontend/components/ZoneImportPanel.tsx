@@ -67,6 +67,11 @@ export default function ZoneImportPanel() {
             <p className="font-medium text-green-800">
               {result.zonesImported} zone{result.zonesImported !== 1 ? "s" : ""} imported
             </p>
+            {result.versionTag && (
+              <p className="text-[10px] text-green-700 font-mono">
+                Version: {result.versionTag}
+              </p>
+            )}
             <p className="text-[10px] text-green-600">
               Reload map to see new zones
             </p>

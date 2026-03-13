@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
@@ -32,6 +34,8 @@ public class ZoneImportService {
 
         List<String> errors = new ArrayList<>();
         int imported = 0;
+        String versionTag = "IMPORT-" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss"));
+        LocalDateTime importedAt = LocalDateTime.now();
 
         try {
             String content = new String(file.getBytes(), StandardCharsets.UTF_8);
@@ -78,6 +82,11 @@ public class ZoneImportService {
                         "?)", ordinateArray);
 
                 jdbcTemplate.update(sql, zoneName, riskLevel, geojsonStr);
+
+                // Apply version tag to imported row
+                jdbcTemplate.update(
+                        "UPDATE flood_zones SET version_tag = ?, imported_at = ? WHERE zone_name = ?",
+                        versionTag, java.sql.Timestamp.valueOf(importedAt), zoneName);
                 imported++;
                 log.info("Imported zone: name={}, risk={}", zoneName, riskLevel);
             }
@@ -91,7 +100,7 @@ public class ZoneImportService {
         }
 
         log.info("GeoJSON import complete: {} zones imported", imported);
-        return new ZoneImportResult(imported, errors);
+        return new ZoneImportResult(imported, errors, versionTag);
     }
 
     private String extractZoneName(JsonNode feature) {

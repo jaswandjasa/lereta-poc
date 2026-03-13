@@ -65,6 +65,13 @@ export interface PortfolioDashboardDto {
 export interface ZoneImportResult {
   zonesImported: number;
   errors: string[];
+  versionTag: string | null;
+}
+
+export interface ZoneVersionDto {
+  versionTag: string;
+  zoneCount: number;
+  importedAt: string;
 }
 
 export interface CertificateVerificationDto {

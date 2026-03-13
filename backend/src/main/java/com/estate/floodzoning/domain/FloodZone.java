@@ -30,4 +30,10 @@ public class FloodZone {
     @Lob
     @Column(name = "geojson")
     private String geojson;
+
+    @Column(name = "version_tag")
+    private String versionTag;
+
+    @Column(name = "imported_at")
+    private java.time.LocalDateTime importedAt;
 }

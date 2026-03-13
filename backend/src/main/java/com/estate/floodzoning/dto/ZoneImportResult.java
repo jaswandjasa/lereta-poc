@@ -4,5 +4,6 @@ import java.util.List;
 
 public record ZoneImportResult(
         int zonesImported,
-        List<String> errors
+        List<String> errors,
+        String versionTag
 ) {}
