@@ -76,6 +76,13 @@ export async function bulkFloodCheck(file: File): Promise<BulkFloodSummary> {
   return res.data;
 }
 
+export async function getFloodBuffer(lat: number, lon: number): Promise<{ geojson: string | null }> {
+  const res = await api.get<{ geojson: string | null }>("/api/flood/buffer", {
+    params: { lat, lon },
+  });
+  return res.data;
+}
+
 export async function getPortfolioDashboard(): Promise<PortfolioDashboardDto> {
   const res = await api.get<PortfolioDashboardDto>("/api/dashboard/portfolio");
   return res.data;
