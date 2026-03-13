@@ -24,7 +24,7 @@ export default function FloodMap({
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const markerRef = useRef<mapboxgl.Marker | null>(null);
-  const bufferCacheRef = useRef<{ key: string; geojson: string } | null>(null);
+  const bufferCacheRef = useRef<{ key: string; high: string | null; medium: string | null; low: string | null } | null>(null);
 
   const addFloodZones = useCallback(async (map: mapboxgl.Map) => {
     try {
@@ -123,58 +123,82 @@ export default function FloodMap({
     }
   }, []);
 
+  const BUFFER_LAYERS = [
+    { id: "buffer-low",    color: "#60a5fa", opacity: 0.10, outline: "#3b82f6" },  // 2500m — light blue
+    { id: "buffer-medium", color: "#fbbf24", opacity: 0.14, outline: "#d97706" },  // 1500m — light yellow
+    { id: "buffer-high",   color: "#f87171", opacity: 0.18, outline: "#dc2626" },  // 500m  — light red
+  ];
+
   const showBuffer = useCallback(async (map: mapboxgl.Map, lat: number, lng: number) => {
     const cacheKey = `${lat.toFixed(6)},${lng.toFixed(6)}`;
 
-    // Correction 5: cache last buffer for repeated coordinates
     if (bufferCacheRef.current?.key === cacheKey) {
-      renderBuffer(map, bufferCacheRef.current.geojson);
+      renderBufferLayers(map, bufferCacheRef.current);
       return;
     }
 
     try {
       const res = await getFloodBuffer(lat, lng);
-      if (res.geojson) {
-        bufferCacheRef.current = { key: cacheKey, geojson: res.geojson };
-        renderBuffer(map, res.geojson);
+      if (res.bufferHigh || res.bufferMedium || res.bufferLow) {
+        const cached = { key: cacheKey, high: res.bufferHigh, medium: res.bufferMedium, low: res.bufferLow };
+        bufferCacheRef.current = cached;
+        renderBufferLayers(map, cached);
       } else {
-        removeBuffer(map);
+        removeBufferLayers(map);
       }
     } catch {
-      removeBuffer(map);
+      removeBufferLayers(map);
     }
   }, []);
 
-  const renderBuffer = (map: mapboxgl.Map, geojson: string) => {
-    const parsed = JSON.parse(geojson);
-    const fc: GeoJSON.FeatureCollection = {
-      type: "FeatureCollection",
-      features: [parsed],
-    };
+  const renderBufferLayers = (map: mapboxgl.Map, data: { high: string | null; medium: string | null; low: string | null }) => {
+    const layers = [
+      { geojson: data.low,    ...BUFFER_LAYERS[0] },
+      { geojson: data.medium, ...BUFFER_LAYERS[1] },
+      { geojson: data.high,   ...BUFFER_LAYERS[2] },
+    ];
 
-    if (map.getSource("buffer-zone")) {
-      (map.getSource("buffer-zone") as mapboxgl.GeoJSONSource).setData(fc);
-    } else {
-      map.addSource("buffer-zone", { type: "geojson", data: fc });
-      map.addLayer({
-        id: "buffer-zone-fill",
-        type: "fill",
-        source: "buffer-zone",
-        paint: { "fill-color": "#3b82f6", "fill-opacity": 0.15 },
-      });
-      map.addLayer({
-        id: "buffer-zone-outline",
-        type: "line",
-        source: "buffer-zone",
-        paint: { "line-color": "#3b82f6", "line-width": 1.5, "line-dasharray": [3, 2] },
-      });
+    for (const layer of layers) {
+      const srcId = layer.id;
+      const fillId = `${layer.id}-fill`;
+      const outlineId = `${layer.id}-outline`;
+
+      if (!layer.geojson) {
+        if (map.getLayer(fillId)) map.removeLayer(fillId);
+        if (map.getLayer(outlineId)) map.removeLayer(outlineId);
+        if (map.getSource(srcId)) map.removeSource(srcId);
+        continue;
+      }
+
+      const parsed = JSON.parse(layer.geojson);
+      const fc: GeoJSON.FeatureCollection = { type: "FeatureCollection", features: [parsed] };
+
+      if (map.getSource(srcId)) {
+        (map.getSource(srcId) as mapboxgl.GeoJSONSource).setData(fc);
+      } else {
+        map.addSource(srcId, { type: "geojson", data: fc });
+        map.addLayer({
+          id: fillId,
+          type: "fill",
+          source: srcId,
+          paint: { "fill-color": layer.color, "fill-opacity": layer.opacity },
+        });
+        map.addLayer({
+          id: outlineId,
+          type: "line",
+          source: srcId,
+          paint: { "line-color": layer.outline, "line-width": 1.5, "line-dasharray": [3, 2] },
+        });
+      }
     }
   };
 
-  const removeBuffer = (map: mapboxgl.Map) => {
-    if (map.getLayer("buffer-zone-fill")) map.removeLayer("buffer-zone-fill");
-    if (map.getLayer("buffer-zone-outline")) map.removeLayer("buffer-zone-outline");
-    if (map.getSource("buffer-zone")) map.removeSource("buffer-zone");
+  const removeBufferLayers = (map: mapboxgl.Map) => {
+    for (const layer of BUFFER_LAYERS) {
+      if (map.getLayer(`${layer.id}-fill`)) map.removeLayer(`${layer.id}-fill`);
+      if (map.getLayer(`${layer.id}-outline`)) map.removeLayer(`${layer.id}-outline`);
+      if (map.getSource(layer.id)) map.removeSource(layer.id);
+    }
   };
 
   useEffect(() => {

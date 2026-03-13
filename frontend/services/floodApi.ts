@@ -90,8 +90,13 @@ export async function getRiskHistory(propertyId: number): Promise<RiskHistoryDto
   return res.data;
 }
 
-export async function getFloodBuffer(lat: number, lon: number): Promise<{ geojson: string | null }> {
-  const res = await api.get<{ geojson: string | null }>("/api/flood/buffer", {
+export async function getFloodBuffer(lat: number, lon: number): Promise<{
+  geojson: string | null;
+  bufferHigh: string | null;
+  bufferMedium: string | null;
+  bufferLow: string | null;
+}> {
+  const res = await api.get("/api/flood/buffer", {
     params: { lat, lon },
   });
   return res.data;

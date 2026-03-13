@@ -7,7 +7,9 @@ const legendItems = [
   { label: "HIGH Risk Zone", color: "bg-red-500", border: false },
   { label: "MEDIUM Risk Zone", color: "bg-amber-500", border: false },
   { label: "LOW Risk Zone", color: "bg-green-500", border: false },
-  { label: "Buffer Zone (500m)", color: "bg-blue-400", border: true },
+  { label: "High Buffer (500m)", color: "bg-red-400", border: true, borderColor: "border-red-600" },
+  { label: "Medium Buffer (1500m)", color: "bg-amber-300", border: true, borderColor: "border-amber-600" },
+  { label: "Low Buffer (2500m)", color: "bg-blue-400", border: true, borderColor: "border-blue-600" },
   { label: "Selected Property", color: "bg-blue-600", border: false, isPin: true },
 ];
 
@@ -36,7 +38,7 @@ export default function MapLegend() {
               ) : (
                 <div
                   className={`w-3 h-3 rounded-sm ${item.color} ${
-                    item.border ? "border border-dashed border-blue-600 opacity-60" : "opacity-70"
+                    item.border ? `border border-dashed ${(item as any).borderColor || "border-blue-600"} opacity-60` : "opacity-70"
                   }`}
                 />
               )}
