@@ -74,6 +74,20 @@ export interface ZoneVersionDto {
   importedAt: string;
 }
 
+export interface PropertySnapshot {
+  propertyId: number;
+  propertyName: string;
+  riskLevel: string;
+  nearestZone: string;
+  certificateCount: number;
+  activeAlerts: number;
+}
+
+export interface PropertyComparisonDto {
+  property1: PropertySnapshot;
+  property2: PropertySnapshot;
+}
+
 export interface CertificateVerificationDto {
   certificateNumber: string;
   propertyName: string | null;

@@ -12,6 +12,8 @@ public interface CertificateAuditRepository extends JpaRepository<CertificateAud
 
     Optional<CertificateAudit> findByCertificateNumber(String certificateNumber);
 
+    long countByPropertyId(Long propertyId);
+
     @Query(value = "SELECT certificate_seq.NEXTVAL FROM dual", nativeQuery = true)
     Long getNextCertificateSequence();
 }

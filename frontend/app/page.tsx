@@ -13,6 +13,7 @@ import AlertPanel from "@/components/AlertPanel";
 import ZoneImportPanel from "@/components/ZoneImportPanel";
 import PortfolioDashboard from "@/components/PortfolioDashboard";
 import RiskTimeline from "@/components/RiskTimeline";
+import PropertyCompare from "@/components/PropertyCompare";
 import { useFloodCheck } from "@/hooks/useFloodCheck";
 import type { PropertyDto } from "@/types";
 
@@ -116,6 +117,13 @@ export default function Home() {
               Flood Alerts
             </h2>
             <AlertPanel />
+          </div>
+
+          <div>
+            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
+              Property Comparison
+            </h2>
+            <PropertyCompare />
           </div>
 
           <div>

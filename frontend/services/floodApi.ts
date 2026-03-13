@@ -8,6 +8,7 @@ import type {
   MonitoringStatusDto,
   NearestZoneResponse,
   PortfolioDashboardDto,
+  PropertyComparisonDto,
   PropertyDto,
   RiskHistoryDto,
   ZoneImportResult,
@@ -73,6 +74,13 @@ export async function bulkFloodCheck(file: File): Promise<BulkFloodSummary> {
   const res = await api.post<BulkFloodSummary>("/api/flood/bulk-check", formData, {
     headers: { "Content-Type": "multipart/form-data" },
     timeout: 60000,
+  });
+  return res.data;
+}
+
+export async function compareProperties(id1: number, id2: number): Promise<PropertyComparisonDto> {
+  const res = await api.get<PropertyComparisonDto>("/api/properties/compare", {
+    params: { id1, id2 },
   });
   return res.data;
 }

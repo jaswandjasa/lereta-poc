@@ -15,4 +15,6 @@ public interface FloodAlertRepository extends JpaRepository<FloodAlert, Long> {
     List<FloodAlert> findByAcknowledgedFalseOrderByCreatedAtDesc();
 
     Optional<FloodAlert> findTopByPropertyIdOrderByCreatedAtDesc(Long propertyId);
+
+    long countByPropertyIdAndAcknowledgedFalse(Long propertyId);
 }
