@@ -12,6 +12,7 @@ import BulkUpload from "@/components/BulkUpload";
 import AlertPanel from "@/components/AlertPanel";
 import ZoneImportPanel from "@/components/ZoneImportPanel";
 import PortfolioDashboard from "@/components/PortfolioDashboard";
+import RiskTimeline from "@/components/RiskTimeline";
 import { useFloodCheck } from "@/hooks/useFloodCheck";
 import type { PropertyDto } from "@/types";
 
@@ -70,6 +71,13 @@ export default function Home() {
               error={error}
               coordinates={coordinates}
             />
+          </div>
+
+          <div>
+            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
+              Risk History
+            </h2>
+            <RiskTimeline propertyId={selectedProperty?.id ?? null} />
           </div>
 
           <div>

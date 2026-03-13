@@ -41,6 +41,17 @@ export interface BulkFloodSummary {
   results: BulkFloodResult[];
 }
 
+export interface RiskHistoryDto {
+  id: number;
+  propertyId: number;
+  oldRisk: string | null;
+  newRisk: string | null;
+  oldZone: string | null;
+  newZone: string | null;
+  changedAt: string;
+  triggerSource: string;
+}
+
 export interface PortfolioDashboardDto {
   highRiskCount: number;
   mediumRiskCount: number;

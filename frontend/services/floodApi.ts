@@ -9,6 +9,7 @@ import type {
   NearestZoneResponse,
   PortfolioDashboardDto,
   PropertyDto,
+  RiskHistoryDto,
   ZoneImportResult,
 } from "@/types";
 
@@ -73,6 +74,11 @@ export async function bulkFloodCheck(file: File): Promise<BulkFloodSummary> {
     headers: { "Content-Type": "multipart/form-data" },
     timeout: 60000,
   });
+  return res.data;
+}
+
+export async function getRiskHistory(propertyId: number): Promise<RiskHistoryDto[]> {
+  const res = await api.get<RiskHistoryDto[]>(`/api/history/${propertyId}`);
   return res.data;
 }
 
